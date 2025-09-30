@@ -13,6 +13,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
 
+  // Cargar tareas al iniciar
   useEffect(() => {
     getTasks()
       .then(setTasks)
@@ -20,9 +21,10 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Crear nueva tarea
   const handleAdd = async (text) => {
     try {
-      const newTask = { author: user.name, text, completed: false };
+      const newTask = { author: user.name, text, completed: false, editor: null };
       const created = await createTask(newTask);
       setTasks((prev) => [created, ...prev]);
       toast.success("Tarea creada");
@@ -31,15 +33,22 @@ export default function Home() {
     }
   };
 
+  // Marcar completada/pendiente
   const handleToggle = async (id, completed) => {
     try {
-      const updated = await updateTask(id, { completed });
+      const current = tasks.find((t) => t.id === id);
+      if (!current) return;
+
+      const updatedTask = { ...current, completed };
+      const updated = await updateTask(id, updatedTask);
+
       setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
     } catch {
       toast.error("Error actualizando tarea");
     }
   };
 
+  // Eliminar tarea
   const handleDelete = async (id) => {
     try {
       await deleteTask(id);
@@ -50,6 +59,28 @@ export default function Home() {
     }
   };
 
+  // Editar tarea
+  const handleEdit = async (id, newText) => {
+    try {
+      const current = tasks.find((t) => t.id === id);
+      if (!current) return;
+
+      const updatedTask = {
+        ...current,
+        text: newText,
+        editor: user.name,
+      };
+
+      const updated = await updateTask(id, updatedTask);
+
+      setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
+      toast.success("Tarea editada");
+    } catch {
+      toast.error("Error editando tarea");
+    }
+  };
+
+  // Filtrado
   const filtered = tasks.filter((t) => {
     const matchesQuery = `${t.author} ${t.text}`
       .toLowerCase()
@@ -101,6 +132,7 @@ export default function Home() {
             tasks={filtered}
             onToggle={handleToggle}
             onDelete={handleDelete}
+            onEdit={handleEdit}
           />
         )}
       </main>

@@ -1,32 +1,32 @@
 {
   "tasks": [
     {
-      "id": 1,
-      "text": "Configurar entorno con Vite y Tailwind",
-      "author": "Jose",
-      "editor": null,
-      "completed": false
-    },
-    {
-      "id": 2,
+      "id": "2",
       "text": "Implementar búsqueda con debounce",
       "author": "Julieth",
       "editor": "Jose",
       "completed": true
     },
     {
-      "id": 3,
-      "text": "Probar login con usuario y contraseña",
+      "id": "3",
+      "text": "Probar login conario y contraseña",
       "author": "Jose",
-      "editor": "Julieth",
+      "editor": "Jose David",
       "completed": false
     },
     {
-      "id": 4,
+      "id": "4",
       "text": "Preparar README para la entrega",
       "author": "Julieth",
       "editor": null,
       "completed": true
+    },
+    {
+      "id": "121a",
+      "author": "Jose David",
+      "text": "Jueguelo",
+      "completed": false,
+      "editor": null
     }
   ]
 }
