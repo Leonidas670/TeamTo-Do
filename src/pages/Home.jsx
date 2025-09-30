@@ -22,7 +22,7 @@ export default function Home() {
 
   const handleAdd = async (text) => {
     try {
-      const newTask = { author: user.name, text, completed: false, editor: null };
+      const newTask = { author: user.name, text, completed: false };
       const created = await createTask(newTask);
       setTasks((prev) => [created, ...prev]);
       toast.success("Tarea creada");
@@ -47,16 +47,6 @@ export default function Home() {
       toast.info("Tarea eliminada");
     } catch {
       toast.error("Error eliminando tarea");
-    }
-  };
-
-  const handleEdit = async (id, newText) => {
-    try {
-      const updated = await updateTask(id, { text: newText, editor: user.name });
-      setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
-      toast.success("Tarea editada");
-    } catch {
-      toast.error("Error editando tarea");
     }
   };
 
@@ -111,7 +101,6 @@ export default function Home() {
             tasks={filtered}
             onToggle={handleToggle}
             onDelete={handleDelete}
-            onEdit={handleEdit}
           />
         )}
       </main>

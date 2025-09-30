@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function TodoForm({ onAdd }) {
+export default function TodoForm({ onAdd, disabled }) {
   const [text, setText] = useState("");
 
   const submit = (e) => {
@@ -17,8 +17,13 @@ export default function TodoForm({ onAdd }) {
         placeholder="Nueva tarea..."
         value={text}
         onChange={(e) => setText(e.target.value)}
+        disabled={disabled}
       />
-      <button className="px-4 py-2 bg-green-600 text-white rounded" type="submit">
+      <button
+        className="px-4 py-2 bg-green-600 text-white rounded"
+        type="submit"
+        disabled={disabled}
+      >
         Añadir
       </button>
     </form>
