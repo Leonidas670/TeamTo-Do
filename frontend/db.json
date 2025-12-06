@@ -1,0 +1,32 @@
+{
+  "tasks": [
+    {
+      "id": "2",
+      "text": "Implementar búsqueda con debounce",
+      "author": "Julieth",
+      "editor": "Jose",
+      "completed": true
+    },
+    {
+      "id": "3",
+      "text": "Probar login conario y contraseña",
+      "author": "Jose",
+      "editor": "Jose David",
+      "completed": false
+    },
+    {
+      "id": "4",
+      "text": "Preparar README para la entrega",
+      "author": "Julieth",
+      "editor": null,
+      "completed": true
+    },
+    {
+      "id": "121a",
+      "author": "Jose David",
+      "text": "Jueguelo",
+      "completed": false,
+      "editor": null
+    }
+  ]
+}
