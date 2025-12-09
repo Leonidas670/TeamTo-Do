@@ -15,8 +15,8 @@ export default function SearchBar({ query, setQuery, filter, setFilter }) {
         {["all", "pending", "completed"].map((f) => (
           <button
             key={f}
-            className={`px-3 py-2 rounded border text-sm ${
-              filter === f ? "bg-brand text-white border-brand" : "bg-white"
+            className={`px-3 py-2 rounded border ${
+              filter === f ? "bg-gray-200" : ""
             }`}
             onClick={() => setFilter(f)}
           >

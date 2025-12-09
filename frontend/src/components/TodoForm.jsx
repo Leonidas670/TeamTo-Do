@@ -20,7 +20,7 @@ export default function TodoForm({ onAdd, disabled }) {
         disabled={disabled}
       />
       <button
-        className="px-4 py-2 bg-brand text-white rounded hover:bg-brand-dark disabled:opacity-60"
+        className="px-4 py-2 bg-green-600 text-white rounded"
         type="submit"
         disabled={disabled}
       >

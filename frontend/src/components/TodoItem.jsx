@@ -38,7 +38,7 @@ export default function TodoItem({ task, onToggle, onDelete, onEdit }) {
         <div className="flex gap-2">
           {isEditing ? (
             <button
-              className="px-2 py-1 bg-brand text-white rounded text-sm hover:bg-brand-dark"
+              className="px-2 py-1 bg-green-500 text-white rounded text-sm"
               onClick={saveEdit}
             >
               Guardar

@@ -27,7 +27,7 @@ export default function LoginForm() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button className="bg-brand text-white px-4 py-2 rounded hover:bg-brand-dark">
+      <button className="bg-blue-600 text-white px-4 py-2 rounded">
         Entrar / Registrarse
       </button>
     </form>
