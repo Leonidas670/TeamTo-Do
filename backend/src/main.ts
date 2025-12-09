@@ -3,11 +3,13 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
   // Configure CORS using env var(s).
   // Accept a single FRONTEND_URL or a comma-separated FRONTEND_URLS list.
   // Trim trailing slashes so `https://site.netlify.app/` and
   // `https://site.netlify.app` are treated the same.
   const raw = process.env.FRONTEND_URLS ?? process.env.FRONTEND_URL;
+  
   if (raw) {
     const allowed = raw
       .split(',')
@@ -24,11 +26,17 @@ async function bootstrap() {
         return callback(new Error('CORS origin denied'));
       },
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     });
   } else {
     // No FRONTEND_URL specified: allow all origins (development convenience).
-    app.enableCors();
+    app.enableCors({
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    });
   }
+  
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
