@@ -1,8 +1,7 @@
-import { useState } from "react";
+import useDebounce from "../hooks/useDebounce";
 
-export default function SearchBar() {
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("all");
+export default function SearchBar({ query, setQuery, filter, setFilter }) {
+  const debounced = useDebounce(query, 400);
 
   return (
     <div className="w-full bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-2xl shadow-lg border border-orange-100">
@@ -53,7 +52,7 @@ export default function SearchBar() {
         </div>
 
         {/* Filtros */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <div className="flex items-center gap-2 bg-white/60 px-3 py-2 rounded-lg">
             <svg 
               className="w-4 h-4 text-orange-500" 
@@ -71,7 +70,7 @@ export default function SearchBar() {
             <span className="text-sm font-bold text-gray-700">Filtrar:</span>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {[
               { value: "all", label: "Todas", icon: "📋" },
               { value: "pending", label: "Pendientes", icon: "⏳" },
