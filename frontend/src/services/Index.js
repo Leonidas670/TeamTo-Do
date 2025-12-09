@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// Base URL configurable via Vite env var `VITE_API_URL`.
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: API_BASE,
 });
 
 // Obtener todas las tareas
