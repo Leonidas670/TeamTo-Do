@@ -33,10 +33,10 @@ export default function Login() {
             </svg>
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 bg-clip-text text-transparent mb-2">
-            Bienvenido
+            Iniciar Sesión
           </h1>
           <p className="text-gray-600">
-            Inicia sesión para continuar
+            Ingresa tus credenciales para continuar
           </p>
         </div>
 
