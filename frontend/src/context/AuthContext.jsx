@@ -23,19 +23,8 @@ export function AuthProvider({ children }) {
         toast.success(`Bienvenido ${u.name}`);
         navigate("/");
       })
-      .catch((err) => {
-        // Si no existe, registramos automáticamente generando un email local
-        const fakeEmail = `${name.replace(/\s+/g, "_").toLowerCase()}@local.test`;
-        apiRegister({ name, email: fakeEmail, password })
-          .then((u) => {
-            setUser(u);
-            localStorage.setItem("auth_user", JSON.stringify(u));
-            toast.success(`Usuario creado: ${u.name}`);
-            navigate("/");
-          })
-          .catch(() => {
-            toast.error("Error en autenticación");
-          });
+      .catch(() => {
+        toast.error("Error en autenticación");
       });
   };
 
