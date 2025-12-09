@@ -14,9 +14,12 @@ export function AuthProvider({ children }) {
     if (raw) setUser(JSON.parse(raw));
   }, []);
 
-  const login = (name, password) => {
+  const login = (emailOrName, password) => {
+    const isEmail = emailOrName.includes('@');
+    const payload = isEmail ? { email: emailOrName, password } : { name: emailOrName, password };
+
     // Intentamos iniciar sesión contra el backend
-    apiLogin({ name, password })
+    apiLogin(payload)
       .then((u) => {
         setUser(u);
         localStorage.setItem("auth_user", JSON.stringify(u));
