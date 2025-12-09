@@ -13,14 +13,14 @@ export default function TodoForm({ onAdd, disabled }) {
   return (
     <form onSubmit={submit} className="flex gap-2">
       <input
-        className="flex-1 border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+        className="flex-1 border px-3 py-2 rounded"
         placeholder="Nueva tarea..."
         value={text}
         onChange={(e) => setText(e.target.value)}
         disabled={disabled}
       />
       <button
-        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-60"
+        className="px-4 py-2 bg-brand text-white rounded hover:bg-brand-dark disabled:opacity-60"
         type="submit"
         disabled={disabled}
       >

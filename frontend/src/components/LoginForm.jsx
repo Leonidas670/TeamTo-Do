@@ -13,22 +13,23 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3 max-w-sm mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-semibold text-center">Bienvenido</h2>
+    <form onSubmit={submit} className="flex flex-col gap-3 max-w-sm mx-auto">
       <input
-        className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+        className="border px-3 py-2 rounded"
         placeholder="Usuario"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
       <input
         type="password"
-        className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+        className="border px-3 py-2 rounded"
         placeholder="Contraseña"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">{`Entrar / Registrarse`}</button>
+      <button className="bg-brand text-white px-4 py-2 rounded hover:bg-brand-dark">
+        Entrar / Registrarse
+      </button>
     </form>
   );
 }
