@@ -93,39 +93,26 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen p-6 max-w-4xl mx-auto">
-      <header className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Team To-Do</h1>
-        {user && (
-          <div className="flex gap-3 items-center">
-            <span>👤 {user.name}</span>
-            <button
-              onClick={logout}
-              className="px-3 py-1 border rounded text-sm"
-            >
-              Logout
-            </button>
-          </div>
-        )}
-      </header>
-
-      <main className="bg-white p-6 rounded shadow">
-        <SearchBar
-          query={query}
-          setQuery={setQuery}
-          filter={filter}
-          setFilter={setFilter}
-        />
+    <main className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">Tus Tareas</h1>
+          <SearchBar
+            query={query}
+            setQuery={setQuery}
+            filter={filter}
+            setFilter={setFilter}
+          />
+        </div>
 
         <div className="my-4">
           <TodoForm onAdd={handleAdd} />
         </div>
 
         {loading ? (
-          <div className="text-center p-6">Cargando tareas...</div>
+          <div className="text-center p-6 text-gray-500">Cargando tareas...</div>
         ) : filtered.length === 0 ? (
           <div className="text-center p-6 text-gray-500">
-            No se encontraron tareas.
+            No has añadido ninguna tarea todavía.
           </div>
         ) : (
           <TodoList
@@ -136,6 +123,5 @@ export default function Home() {
           />
         )}
       </main>
-    </div>
   );
 }
