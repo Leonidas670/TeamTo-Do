@@ -4,9 +4,24 @@ const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    const FRONTEND_URL = process.env.FRONTEND_URL;
-    if (FRONTEND_URL) {
-        app.enableCors({ origin: FRONTEND_URL });
+    const raw = process.env.FRONTEND_URLS ?? process.env.FRONTEND_URL;
+    if (raw) {
+        const allowed = raw
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean)
+            .map(s => (s.endsWith('/') ? s.slice(0, -1) : s));
+        app.enableCors({
+            origin: (origin, callback) => {
+                if (!origin)
+                    return callback(null, true);
+                const normalized = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+                if (allowed.includes(normalized))
+                    return callback(null, true);
+                return callback(new Error('CORS origin denied'));
+            },
+            credentials: true,
+        });
     }
     else {
         app.enableCors();

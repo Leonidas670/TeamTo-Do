@@ -32,10 +32,8 @@ function App() {
           ) : (
             <div className="flex gap-4">
               <Link to="/" className="text-gray-600 hover:text-blue-700">
-                Home
               </Link>
               <Link to="/users" className="text-gray-600 hover:text-blue-700">
-                Users
               </Link>
             </div>
           )}
