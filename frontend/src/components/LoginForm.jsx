@@ -6,9 +6,29 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const { login } = useAuth();
 
+  // Validación de contraseña
+  const validatePassword = (pass) => {
+    const minLength = pass.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(pass);
+    const hasLowerCase = /[a-z]/.test(pass);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pass);
+    
+    return {
+      isValid: minLength && hasUpperCase && hasLowerCase && hasSpecialChar,
+      minLength,
+      hasUpperCase,
+      hasLowerCase,
+      hasSpecialChar
+    };
+  };
+
+  const passwordValidation = validatePassword(password);
+  const showValidation = password.length > 0;
+
   const submit = (e) => {
     e.preventDefault();
     if (!name.trim() || !password.trim()) return;
+    if (!passwordValidation.isValid) return;
     login(name.trim(), password.trim());
   };
 
@@ -104,16 +124,58 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          {/* Indicadores de validación */}
+          {showValidation && (
+            <div className="mt-3 space-y-1.5">
+              <ValidationItem 
+                valid={passwordValidation.minLength} 
+                text="Mínimo 8 caracteres" 
+              />
+              <ValidationItem 
+                valid={passwordValidation.hasUpperCase} 
+                text="Una letra mayúscula" 
+              />
+              <ValidationItem 
+                valid={passwordValidation.hasLowerCase} 
+                text="Una letra minúscula" 
+              />
+              <ValidationItem 
+                valid={passwordValidation.hasSpecialChar} 
+                text="Un carácter especial (!@#$%^&*...)" 
+              />
+            </div>
+          )}
         </div>
 
         <button
           className="w-full mt-2 bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 hover:from-orange-600 hover:via-rose-600 hover:to-amber-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-300 disabled:from-gray-300 disabled:via-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none"
           type="submit"
-          disabled={!name.trim() || !password.trim()}
+          disabled={!name.trim() || !passwordValidation.isValid}
         >
           Entrar / Registrarse
         </button>
       </form>
+    </div>
+  );
+}
+
+// Componente auxiliar para los indicadores de validación
+function ValidationItem({ valid, text }) {
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      {valid ? (
+        <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        </svg>
+      ) : (
+        <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+        </svg>
+      )}
+      <span className={valid ? "text-green-600 font-medium" : "text-gray-500"}>
+        {text}
+      </span>
     </div>
   );
 }
