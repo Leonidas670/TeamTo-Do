@@ -46,8 +46,20 @@ export function AuthProvider({ children }) {
     navigate("/login");
   };
 
+  const register = (name, email, password) => {
+    apiRegister({ name, email, password })
+      .then((u) => {
+        toast.success(`Usuario ${u.name} creado correctamente!`);
+        navigate("/login");
+      })
+      .catch((err) => {
+        const message = err?.response?.data?.message || "Error en el registro";
+        toast.error(message);
+      });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
