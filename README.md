@@ -48,7 +48,7 @@ Aplicación web colaborativa para gestionar tareas en equipo con autenticación 
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone https://github.com/tu-usuario/team-todo.git
+git clone https://github.com/Leonidas670/team-todo.git
 cd team-todo
 ```
 
