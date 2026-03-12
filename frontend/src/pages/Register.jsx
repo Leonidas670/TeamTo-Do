@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
@@ -8,7 +8,6 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { register } = useAuth();
-  const navigate = useNavigate();
 
   // Validación de contraseña
   const validatePassword = (pass) => {
@@ -46,10 +45,8 @@ export default function Register() {
     }
 
     // Llamar a la función de registro del contexto
+    // (hace navigate("/login") si sale OK)
     await register(name.trim(), email.trim(), password.trim());
-    
-    // Redirigir al login después del registro exitoso
-    navigate("/login");
   };
 
   return (

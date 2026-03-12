@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { login as apiLogin, register as apiRegister } from "../services/Index.js";
+import { sendWelcomeEmail } from "../services/emailjs.js";
 
 const AuthContext = createContext();
 
@@ -38,16 +39,27 @@ export function AuthProvider({ children }) {
     navigate("/login");
   };
 
-  const register = (name, email, password) => {
-    apiRegister({ name, email, password })
-      .then((u) => {
-        toast.success(`Usuario ${u.name} creado correctamente!`);
-        navigate("/login");
-      })
-      .catch((err) => {
-        const message = err?.response?.data?.message || "Error en el registro";
-        toast.error(message);
-      });
+  const register = async (name, email, password) => {
+    try {
+      const u = await apiRegister({ name, email, password });
+      toast.success(`Usuario ${u.name} creado correctamente!`);
+
+      try {
+        await sendWelcomeEmail({ name: u.name ?? name, email });
+      } catch (e) {
+        // Helpful during setup: EmailJS returns status/text for common config issues.
+        // eslint-disable-next-line no-console
+        console.error("EmailJS error:", e);
+        toast.warning("Registro OK, pero no se pudo enviar el correo. Revisa la consola para más detalles.");
+      }
+
+      navigate("/login");
+      return u;
+    } catch (err) {
+      const message = err?.response?.data?.message || "Error en el registro";
+      toast.error(message);
+      throw err;
+    }
   };
 
   return (
