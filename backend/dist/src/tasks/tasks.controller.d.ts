@@ -4,30 +4,48 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 export declare class TasksController {
     private readonly tasksService;
     constructor(tasksService: TasksService);
-    findAll(): Promise<{
+    findAll(): Promise<({
+        team: {
+            id: number;
+            name: string;
+        } | null;
+    } & {
         id: number;
         author: string;
         text: string;
         completed: boolean;
         editor: string | null;
+        teamId: number | null;
         createdAt: Date;
         updatedAt: Date;
-    }[]>;
+    })[]>;
     create(createTaskDto: CreateTaskDto): Promise<{
+        team: {
+            id: number;
+            name: string;
+        } | null;
+    } & {
         id: number;
         author: string;
         text: string;
         completed: boolean;
         editor: string | null;
+        teamId: number | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
     update(id: string, updateTaskDto: UpdateTaskDto): Promise<{
+        team: {
+            id: number;
+            name: string;
+        } | null;
+    } & {
         id: number;
         author: string;
         text: string;
         completed: boolean;
         editor: string | null;
+        teamId: number | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

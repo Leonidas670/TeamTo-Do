@@ -3,4 +3,5 @@ export declare class UpdateTaskDto {
     text?: string;
     completed?: boolean;
     editor?: string | null;
+    teamId?: number | null;
 }

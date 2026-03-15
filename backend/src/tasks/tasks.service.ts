@@ -8,17 +8,31 @@ export class TasksService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.simpleTask.findMany({ orderBy: { createdAt: 'desc' } });
+    return this.prisma.simpleTask.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { team: { select: { id: true, name: true } } },
+    });
   }
 
   async create(createTaskDto: CreateTaskDto) {
-    return this.prisma.simpleTask.create({ data: createTaskDto as any });
+    const { teamId, ...data } = createTaskDto as any;
+    return this.prisma.simpleTask.create({
+      data: { ...data, teamId: teamId ?? undefined },
+      include: { team: { select: { id: true, name: true } } },
+    });
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
     const existing = await this.prisma.simpleTask.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('Task not found');
-    return this.prisma.simpleTask.update({ where: { id }, data: updateTaskDto as any });
+    const { teamId, ...data } = updateTaskDto as any;
+    const payload: any = { ...data };
+    if (teamId !== undefined) payload.teamId = teamId ?? null;
+    return this.prisma.simpleTask.update({
+      where: { id },
+      data: payload,
+      include: { team: { select: { id: true, name: true } } },
+    });
   }
 
   async remove(id: number) {

@@ -18,16 +18,31 @@ let TasksService = class TasksService {
         this.prisma = prisma;
     }
     async findAll() {
-        return this.prisma.simpleTask.findMany({ orderBy: { createdAt: 'desc' } });
+        return this.prisma.simpleTask.findMany({
+            orderBy: { createdAt: 'desc' },
+            include: { team: { select: { id: true, name: true } } },
+        });
     }
     async create(createTaskDto) {
-        return this.prisma.simpleTask.create({ data: createTaskDto });
+        const { teamId, ...data } = createTaskDto;
+        return this.prisma.simpleTask.create({
+            data: { ...data, teamId: teamId ?? undefined },
+            include: { team: { select: { id: true, name: true } } },
+        });
     }
     async update(id, updateTaskDto) {
         const existing = await this.prisma.simpleTask.findUnique({ where: { id } });
         if (!existing)
             throw new common_1.NotFoundException('Task not found');
-        return this.prisma.simpleTask.update({ where: { id }, data: updateTaskDto });
+        const { teamId, ...data } = updateTaskDto;
+        const payload = { ...data };
+        if (teamId !== undefined)
+            payload.teamId = teamId ?? null;
+        return this.prisma.simpleTask.update({
+            where: { id },
+            data: payload,
+            include: { team: { select: { id: true, name: true } } },
+        });
     }
     async remove(id) {
         const existing = await this.prisma.simpleTask.findUnique({ where: { id } });

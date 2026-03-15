@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTasks, createTask, updateTask, deleteTask } from "../services/Index.js";
+import { getTasks, createTask, updateTask, deleteTask, getTeams } from "../services/Index.js";
 import TodoForm from "../components/TodoForm";
 import TodoList from "../components/TodoList";
 import SearchBar from "../components/SearchBar";
@@ -8,24 +8,35 @@ import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 
 export default function Home() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [tasks, setTasks] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
+  const [teamFilter, setTeamFilter] = useState("");
 
-  // Cargar tareas al iniciar
+  // Cargar tareas y equipos al iniciar
   useEffect(() => {
-    getTasks()
-      .then(setTasks)
-      .catch(() => toast.error("Error cargando tareas"))
+    Promise.all([getTasks(), getTeams()])
+      .then(([tasksData, teamsData]) => {
+        setTasks(tasksData);
+        setTeams(teamsData || []);
+      })
+      .catch(() => toast.error("Error cargando datos"))
       .finally(() => setLoading(false));
   }, []);
 
-  // Crear nueva tarea
-  const handleAdd = async (text) => {
+  // Crear nueva tarea (opcionalmente asignada a un equipo)
+  const handleAdd = async (text, teamId = null) => {
     try {
-      const newTask = { author: user.name, text, completed: false, editor: null };
+      const newTask = {
+        author: user.name,
+        text,
+        completed: false,
+        editor: null,
+        ...(teamId != null && { teamId }),
+      };
       const created = await createTask(newTask);
       setTasks((prev) => [created, ...prev]);
       toast.success("Tarea creada");
@@ -40,9 +51,14 @@ export default function Home() {
       const current = tasks.find((t) => t.id === id);
       if (!current) return;
 
-      const updatedTask = { ...current, completed };
-      const updated = await updateTask(id, updatedTask);
-
+      const payload = {
+        author: current.author,
+        text: current.text,
+        completed,
+        editor: current.editor,
+        teamId: current.teamId ?? undefined,
+      };
+      const updated = await updateTask(id, payload);
       setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
     } catch {
       toast.error("Error actualizando tarea");
@@ -66,14 +82,14 @@ export default function Home() {
       const current = tasks.find((t) => t.id === id);
       if (!current) return;
 
-      const updatedTask = {
-        ...current,
+      const payload = {
+        author: current.author,
         text: newText,
+        completed: current.completed,
         editor: user.name,
+        teamId: current.teamId ?? undefined,
       };
-
-      const updated = await updateTask(id, updatedTask);
-
+      const updated = await updateTask(id, payload);
       setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
       toast.success("Tarea editada");
     } catch {
@@ -81,16 +97,18 @@ export default function Home() {
     }
   };
 
-  // Filtrado
+  // Filtrado por búsqueda, estado y equipo
   const filtered = tasks.filter((t) => {
-    const matchesQuery = `${t.author} ${t.text}`
+    const matchesQuery = `${t.author} ${t.text} ${t.team?.name || ""}`
       .toLowerCase()
       .includes(query.toLowerCase());
     const matchesFilter =
       filter === "all" ||
       (filter === "completed" && t.completed) ||
       (filter === "pending" && !t.completed);
-    return matchesQuery && matchesFilter;
+    const matchesTeam =
+      !teamFilter || String(t.teamId) === teamFilter || (teamFilter === "none" && !t.teamId);
+    return matchesQuery && matchesFilter && matchesTeam;
   });
 
   if (loading) {
@@ -110,8 +128,27 @@ export default function Home() {
         </div>
 
         <div className="my-4">
-          <TodoForm onAdd={handleAdd} />
+          <TodoForm onAdd={handleAdd} teams={teams} />
         </div>
+
+        {teams.length > 0 && (
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="text-sm font-medium text-gray-700">Filtrar por equipo:</span>
+            <select
+              value={teamFilter}
+              onChange={(e) => setTeamFilter(e.target.value)}
+              className="px-3 py-1.5 border-2 border-orange-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none bg-white"
+            >
+              <option value="">Todos</option>
+              <option value="none">Sin equipo</option>
+              {teams.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {filtered.length === 0 ? (
           <div className="text-center p-6 text-gray-500">

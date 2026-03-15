@@ -3,4 +3,5 @@ export declare class CreateTaskDto {
     text: string;
     completed?: boolean;
     editor?: string | null;
+    teamId?: number | null;
 }

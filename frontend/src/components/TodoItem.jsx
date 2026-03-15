@@ -81,14 +81,22 @@ export default function TodoItem({ task, onToggle, onDelete, onEdit }) {
               </div>
             )}
 
-            {/* Info del autor */}
-            <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+            {/* Info del autor y equipo */}
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
               <div className="flex items-center gap-1">
                 <svg className="w-3.5 h-3.5 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                 </svg>
                 <span className="font-medium">{mockTask.author}</span>
               </div>
+              {mockTask.team && (
+                <>
+                  <span className="text-gray-300">•</span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 font-medium">
+                    {mockTask.team.name}
+                  </span>
+                </>
+              )}
               {mockTask.editor && (
                 <>
                   <span className="text-gray-300">•</span>

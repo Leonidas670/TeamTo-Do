@@ -1,13 +1,16 @@
 import { useState } from "react";
 
-export default function TodoForm({ onAdd, disabled }) {
+export default function TodoForm({ onAdd, disabled, teams = [] }) {
   const [text, setText] = useState("");
+  const [teamId, setTeamId] = useState("");
 
   const submit = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    onAdd?.(text.trim());
+    const tid = teamId === "" ? null : Number(teamId);
+    onAdd?.(text.trim(), tid);
     setText("");
+    setTeamId("");
   };
 
   return (
@@ -33,7 +36,8 @@ export default function TodoForm({ onAdd, disabled }) {
         </h2>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
         <div className="flex-1 relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <svg 
@@ -79,6 +83,28 @@ export default function TodoForm({ onAdd, disabled }) {
           )}
         </div>
 
+        {teams.length > 0 && (
+          <div className="flex items-center gap-2">
+            <label htmlFor="task-team" className="text-sm font-medium text-gray-700 whitespace-nowrap">
+              Equipo:
+            </label>
+            <select
+              id="task-team"
+              value={teamId}
+              onChange={(e) => setTeamId(e.target.value)}
+              disabled={disabled}
+              className="px-3 py-2 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none bg-white text-gray-800 disabled:bg-gray-100"
+            >
+              <option value="">Sin equipo</option>
+              {teams.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <button
           className="bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 hover:from-orange-600 hover:via-rose-600 hover:to-amber-600 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-300 shrink-0 disabled:from-gray-300 disabled:via-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none flex items-center gap-2"
           onClick={submit}
@@ -100,6 +126,7 @@ export default function TodoForm({ onAdd, disabled }) {
           <span className="hidden sm:inline">Agregar Tarea</span>
           <span className="sm:hidden">Agregar</span>
         </button>
+        </div>
       </div>
 
       {/* Contador de caracteres */}

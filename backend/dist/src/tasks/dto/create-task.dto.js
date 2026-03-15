@@ -6,6 +6,7 @@ class CreateTaskDto {
     text;
     completed;
     editor;
+    teamId;
 }
 exports.CreateTaskDto = CreateTaskDto;
 //# sourceMappingURL=create-task.dto.js.map

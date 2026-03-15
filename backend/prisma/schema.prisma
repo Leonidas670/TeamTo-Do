@@ -28,12 +28,13 @@ model User {
 }
 
 model Team {
-  id        Int          @id @default(autoincrement())
-  name      String
+  id          Int          @id @default(autoincrement())
+  name        String
   description String?
 
-  members   TeamMember[]
-  tasks     Task[]
+  members      TeamMember[]
+  tasks        Task[]
+  simpleTasks  SimpleTask[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,6 +105,9 @@ model SimpleTask {
   text      String
   completed Boolean  @default(false)
   editor    String?
+
+  teamId    Int?
+  team      Team?    @relation(fields: [teamId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

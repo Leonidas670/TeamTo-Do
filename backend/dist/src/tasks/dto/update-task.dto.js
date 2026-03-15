@@ -6,6 +6,7 @@ class UpdateTaskDto {
     text;
     completed;
     editor;
+    teamId;
 }
 exports.UpdateTaskDto = UpdateTaskDto;
 //# sourceMappingURL=update-task.dto.js.map
