@@ -3,6 +3,7 @@ import { getTasks, createTask, updateTask, deleteTask } from "../services/Index.
 import TodoForm from "../components/TodoForm";
 import TodoList from "../components/TodoList";
 import SearchBar from "../components/SearchBar";
+import LoadingScreen from "../components/LoadingScreen";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 
@@ -92,6 +93,10 @@ export default function Home() {
     return matchesQuery && matchesFilter;
   });
 
+  if (loading) {
+    return <LoadingScreen text="Cargando tus tareas..." />;
+  }
+
   return (
     <main className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
@@ -108,9 +113,7 @@ export default function Home() {
           <TodoForm onAdd={handleAdd} />
         </div>
 
-        {loading ? (
-          <div className="text-center p-6 text-gray-500">Cargando tareas...</div>
-        ) : filtered.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="text-center p-6 text-gray-500">
             No has añadido ninguna tarea todavía.
           </div>
