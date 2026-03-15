@@ -16,6 +16,7 @@ exports.TeamsController = void 0;
 const common_1 = require("@nestjs/common");
 const teams_service_1 = require("./teams.service");
 const create_team_dto_1 = require("./dto/create-team.dto");
+const add_member_dto_1 = require("./dto/add-member.dto");
 let TeamsController = class TeamsController {
     teamsService;
     constructor(teamsService) {
@@ -24,11 +25,20 @@ let TeamsController = class TeamsController {
     findAll() {
         return this.teamsService.findAll();
     }
-    findOne(id) {
-        return this.teamsService.findOne(Number(id));
-    }
     create(createTeamDto) {
         return this.teamsService.create(createTeamDto);
+    }
+    getMembers(id) {
+        return this.teamsService.getMembers(Number(id));
+    }
+    addMember(id, dto) {
+        return this.teamsService.addMember(Number(id), dto);
+    }
+    removeMember(id, userId) {
+        return this.teamsService.removeMember(Number(id), Number(userId));
+    }
+    findOne(id) {
+        return this.teamsService.findOne(Number(id));
     }
 };
 exports.TeamsController = TeamsController;
@@ -39,19 +49,42 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TeamsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], TeamsController.prototype, "findOne", null);
-__decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_team_dto_1.CreateTeamDto]),
     __metadata("design:returntype", void 0)
 ], TeamsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(':id/members'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TeamsController.prototype, "getMembers", null);
+__decorate([
+    (0, common_1.Post)(':id/members'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, add_member_dto_1.AddMemberDto]),
+    __metadata("design:returntype", void 0)
+], TeamsController.prototype, "addMember", null);
+__decorate([
+    (0, common_1.Delete)(':id/members/:userId'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], TeamsController.prototype, "removeMember", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TeamsController.prototype, "findOne", null);
 exports.TeamsController = TeamsController = __decorate([
     (0, common_1.Controller)('teams'),
     __metadata("design:paramtypes", [teams_service_1.TeamsService])

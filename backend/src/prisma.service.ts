@@ -30,6 +30,10 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     return this.prisma.team;
   }
 
+  get teamMember() {
+    return this.prisma.teamMember;
+  }
+
   async onModuleInit() {
     await this.prisma.$connect();
   }

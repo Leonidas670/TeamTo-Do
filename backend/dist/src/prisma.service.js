@@ -28,6 +28,9 @@ let PrismaService = class PrismaService {
     get team() {
         return this.prisma.team;
     }
+    get teamMember() {
+        return this.prisma.teamMember;
+    }
     async onModuleInit() {
         await this.prisma.$connect();
     }

@@ -41,3 +41,6 @@ export const createUser = (user) => api.post('/users', user).then(r => r.data);
 // Teams
 export const getTeams = () => api.get('/teams').then(r => r.data);
 export const createTeam = (team) => api.post('/teams', team).then(r => r.data);
+export const getTeamMembers = (teamId) => api.get(`/teams/${teamId}/members`).then(r => r.data);
+export const addTeamMember = (teamId, payload) => api.post(`/teams/${teamId}/members`, payload).then(r => r.data);
+export const removeTeamMember = (teamId, userId) => api.delete(`/teams/${teamId}/members/${userId}`).then(r => r.data);

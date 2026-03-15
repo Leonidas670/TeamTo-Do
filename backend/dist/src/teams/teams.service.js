@@ -18,16 +18,77 @@ let TeamsService = class TeamsService {
         this.prisma = prisma;
     }
     async findAll() {
-        return this.prisma.team.findMany({ orderBy: { createdAt: 'desc' } });
+        return this.prisma.team.findMany({
+            orderBy: { createdAt: 'desc' },
+            include: {
+                members: {
+                    include: {
+                        user: { select: { id: true, name: true, email: true } },
+                    },
+                },
+            },
+        });
     }
     async findOne(id) {
-        const t = await this.prisma.team.findUnique({ where: { id } });
+        const t = await this.prisma.team.findUnique({
+            where: { id },
+            include: {
+                members: {
+                    include: {
+                        user: { select: { id: true, name: true, email: true } },
+                    },
+                },
+            },
+        });
         if (!t)
             throw new common_1.NotFoundException('Team not found');
         return t;
     }
     async create(dto) {
         return this.prisma.team.create({ data: dto });
+    }
+    async getMembers(teamId) {
+        await this.findOne(teamId);
+        return this.prisma.teamMember.findMany({
+            where: { teamId },
+            include: {
+                user: { select: { id: true, name: true, email: true } },
+            },
+        });
+    }
+    async addMember(teamId, dto) {
+        const team = await this.prisma.team.findUnique({ where: { id: teamId } });
+        if (!team)
+            throw new common_1.NotFoundException('Team not found');
+        const email = dto.email.trim().toLowerCase();
+        const users = await this.prisma.user.findMany();
+        const user = users.find((u) => u.email.toLowerCase() === email);
+        if (!user)
+            throw new common_1.NotFoundException('Usuario no encontrado con ese correo');
+        const existing = await this.prisma.teamMember.findFirst({
+            where: { teamId, userId: user.id },
+        });
+        if (existing)
+            throw new common_1.BadRequestException('Ese usuario ya pertenece al equipo');
+        const role = dto.role === 'ADMIN' ? 'ADMIN' : 'MEMBER';
+        return this.prisma.teamMember.create({
+            data: { teamId, userId: user.id, role },
+            include: {
+                user: { select: { id: true, name: true, email: true } },
+            },
+        });
+    }
+    async removeMember(teamId, userId) {
+        const team = await this.prisma.team.findUnique({ where: { id: teamId } });
+        if (!team)
+            throw new common_1.NotFoundException('Team not found');
+        const member = await this.prisma.teamMember.findFirst({
+            where: { teamId, userId },
+        });
+        if (!member)
+            throw new common_1.NotFoundException('Miembro no encontrado en el equipo');
+        await this.prisma.teamMember.delete({ where: { id: member.id } });
+        return { ok: true };
     }
 };
 exports.TeamsService = TeamsService;
