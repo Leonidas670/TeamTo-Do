@@ -12,7 +12,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const raw = localStorage.getItem("auth_user");
-    if (raw) setUser(JSON.parse(raw));
+    if (!raw || raw === "undefined") return;
+    try {
+      const u = JSON.parse(raw);
+      if (u?.id) setUser(u);
+    } catch {
+      localStorage.removeItem("auth_user");
+      localStorage.removeItem("auth_token");
+    }
   }, []);
 
   const login = (emailOrName, password) => {
@@ -24,7 +31,7 @@ export function AuthProvider({ children }) {
       .then(({ user: u, token }) => {
         setUser(u);
         localStorage.setItem("auth_user", JSON.stringify(u));
-        localStorage.setItem("auth_token", JSON.stringify(token));
+        if (token) localStorage.setItem("auth_token", token);
         toast.success(`Bienvenido ${u.name}`);
         navigate("/");
       })
@@ -47,7 +54,7 @@ export function AuthProvider({ children }) {
       toast.success(`Usuario ${u.name} creado correctamente!`);
 
       localStorage.setItem("auth_user", JSON.stringify(u));
-      localStorage.setItem("auth_token", JSON.stringify(token));
+      if (token) localStorage.setItem("auth_token", token);
 
       try {
         await sendWelcomeEmail({ name: u.name ?? name, email });
