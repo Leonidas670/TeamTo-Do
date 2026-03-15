@@ -6,10 +6,16 @@ export declare class AuthController {
         name?: string;
         email?: string;
         password: string;
-    }): Promise<any>;
+    }): Promise<{
+        user: any;
+        token: string;
+    }>;
     register(body: {
         name: string;
         email: string;
         password: string;
-    }): Promise<any>;
+    }): Promise<{
+        user: any;
+        token: string;
+    }>;
 }

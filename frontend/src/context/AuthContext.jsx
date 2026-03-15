@@ -21,9 +21,10 @@ export function AuthProvider({ children }) {
 
     // Intentamos iniciar sesión contra el backend
     apiLogin(payload)
-      .then((u) => {
+      .then(({ user: u, token }) => {
         setUser(u);
         localStorage.setItem("auth_user", JSON.stringify(u));
+        localStorage.setItem("auth_token", JSON.stringify(token));
         toast.success(`Bienvenido ${u.name}`);
         navigate("/");
       })
@@ -35,14 +36,18 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("auth_user");
+    localStorage.removeItem("auth_token");
     toast.info("Sesión cerrada");
     navigate("/login");
   };
 
   const register = async (name, email, password) => {
     try {
-      const u = await apiRegister({ name, email, password });
+      const { user: u, token } = await apiRegister({ name, email, password });
       toast.success(`Usuario ${u.name} creado correctamente!`);
+
+      localStorage.setItem("auth_user", JSON.stringify(u));
+      localStorage.setItem("auth_token", JSON.stringify(token));
 
       try {
         await sendWelcomeEmail({ name: u.name ?? name, email });

@@ -1,5 +1,7 @@
 import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 
 @Controller('auth')
 export class AuthController {
@@ -12,13 +14,29 @@ export class AuthController {
     if (email) user = await this.usersService.findAll().then((u) => u.find((x) => x.email === email));
     else if (name) user = await this.usersService.findByName(name);
 
-    if (!user || user.password !== password) {
+    if (!user) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
-    // Return user object without password
+    const passwordOk = await bcrypt.compare(password, (user as any).password);
+    if (!passwordOk) {
+      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+    }
+
     const { password: _p, ...rest } = user as any;
-    return rest;
+
+    const secret = process.env.JWT_SECRET || 'dev-secret';
+    const token = jwt.sign(
+      {
+        sub: rest.id,
+        name: rest.name,
+        email: rest.email,
+      },
+      secret,
+      { expiresIn: '7d' },
+    );
+
+    return { user: rest, token };
   }
 
   @Post('register')
@@ -29,6 +47,18 @@ export class AuthController {
     }
     const created = await this.usersService.create(body as any);
     const { password: _p, ...rest } = created as any;
-    return rest;
+
+    const secret = process.env.JWT_SECRET || 'dev-secret';
+    const token = jwt.sign(
+      {
+        sub: rest.id,
+        name: rest.name,
+        email: rest.email,
+      },
+      secret,
+      { expiresIn: '7d' },
+    );
+
+    return { user: rest, token };
   }
 }

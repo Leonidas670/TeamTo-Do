@@ -7,6 +7,16 @@ const api = axios.create({
   baseURL: API_BASE,
 });
 
+// Attach JWT token if present
+api.interceptors.request.use((config) => {
+  const raw = localStorage.getItem("auth_token");
+  if (raw) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${JSON.parse(raw)}`;
+  }
+  return config;
+});
+
 // Obtener todas las tareas
 export const getTasks = () => api.get("/tasks").then((r) => r.data);
 
