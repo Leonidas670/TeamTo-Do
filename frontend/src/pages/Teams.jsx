@@ -11,8 +11,6 @@ import { AuthContext } from "../context/AuthContext";
 
 export default function Teams() {
   const { user } = useContext(AuthContext);
-
-export default function Teams() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
