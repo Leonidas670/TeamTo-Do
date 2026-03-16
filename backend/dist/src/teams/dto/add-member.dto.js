@@ -4,6 +4,7 @@ exports.AddMemberDto = void 0;
 class AddMemberDto {
     email;
     role;
+    inviterId;
 }
 exports.AddMemberDto = AddMemberDto;
 //# sourceMappingURL=add-member.dto.js.map

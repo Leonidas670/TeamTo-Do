@@ -11,13 +11,14 @@ const common_1 = require("@nestjs/common");
 const teams_service_1 = require("./teams.service");
 const teams_controller_1 = require("./teams.controller");
 const prisma_service_1 = require("../prisma.service");
+const email_service_1 = require("../email.service");
 let TeamsModule = class TeamsModule {
 };
 exports.TeamsModule = TeamsModule;
 exports.TeamsModule = TeamsModule = __decorate([
     (0, common_1.Module)({
         controllers: [teams_controller_1.TeamsController],
-        providers: [teams_service_1.TeamsService, prisma_service_1.PrismaService],
+        providers: [teams_service_1.TeamsService, prisma_service_1.PrismaService, email_service_1.EmailService],
         exports: [teams_service_1.TeamsService],
     })
 ], TeamsModule);

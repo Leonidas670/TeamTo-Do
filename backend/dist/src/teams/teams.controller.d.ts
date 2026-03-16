@@ -13,23 +13,23 @@ export declare class TeamsController {
             };
         } & {
             id: number;
-            teamId: number;
             role: import(".prisma/client").$Enums.TeamRole;
             userId: number;
+            teamId: number;
         })[];
     } & {
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     create(createTeamDto: CreateTeamDto): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getMembers(id: string): Promise<({
         user: {
@@ -39,9 +39,9 @@ export declare class TeamsController {
         };
     } & {
         id: number;
-        teamId: number;
         role: import(".prisma/client").$Enums.TeamRole;
         userId: number;
+        teamId: number;
     })[]>;
     addMember(id: string, dto: AddMemberDto): Promise<{
         user: {
@@ -51,9 +51,9 @@ export declare class TeamsController {
         };
     } & {
         id: number;
-        teamId: number;
         role: import(".prisma/client").$Enums.TeamRole;
         userId: number;
+        teamId: number;
     }>;
     removeMember(id: string, userId: string): Promise<{
         ok: boolean;
@@ -67,15 +67,15 @@ export declare class TeamsController {
             };
         } & {
             id: number;
-            teamId: number;
             role: import(".prisma/client").$Enums.TeamRole;
             userId: number;
+            teamId: number;
         })[];
     } & {
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }

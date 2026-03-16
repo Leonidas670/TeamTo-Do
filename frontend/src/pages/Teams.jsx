@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import {
   getTeams,
   createTeam,
@@ -7,6 +7,10 @@ import {
 } from "../services/Index.js";
 import LoadingScreen from "../components/LoadingScreen";
 import { toast } from "react-toastify";
+import { AuthContext } from "../context/AuthContext";
+
+export default function Teams() {
+  const { user } = useContext(AuthContext);
 
 export default function Teams() {
   const [teams, setTeams] = useState([]);
@@ -60,7 +64,7 @@ export default function Teams() {
     setAddingMember(teamId);
     try {
       const role = inviteRole[teamId] === "ADMIN" ? "ADMIN" : "MEMBER";
-      await addTeamMember(teamId, { email, role });
+      await addTeamMember(teamId, { email, role, inviterId: user.id });
       setInviteEmail((prev) => ({ ...prev, [teamId]: "" }));
       toast.success("Invitación enviada");
       loadTeams();

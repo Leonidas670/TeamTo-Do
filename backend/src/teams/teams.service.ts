@@ -2,10 +2,11 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../prisma.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { AddMemberDto } from './dto/add-member.dto';
+import { EmailService } from '../email.service';
 
 @Injectable()
 export class TeamsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private emailService: EmailService) {}
 
   async findAll() {
     return this.prisma.team.findMany({
@@ -64,12 +65,20 @@ export class TeamsService {
     if (existing) throw new BadRequestException('Ese usuario ya pertenece al equipo');
 
     const role = dto.role === 'ADMIN' ? 'ADMIN' : 'MEMBER';
-    return this.prisma.teamMember.create({
+    const member = await this.prisma.teamMember.create({
       data: { teamId, userId: user.id, role },
       include: {
         user: { select: { id: true, name: true, email: true } },
       },
     });
+
+    // Enviar email de invitación
+    const inviter = await this.prisma.user.findUnique({ where: { id: dto.inviterId } });
+    if (inviter) {
+      await this.emailService.sendInvitationEmail(user.email, team.name, inviter.name);
+    }
+
+    return member;
   }
 
   async removeMember(teamId: number, userId: number) {

@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TeamsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
+const email_service_1 = require("../email.service");
 let TeamsService = class TeamsService {
     prisma;
-    constructor(prisma) {
+    emailService;
+    constructor(prisma, emailService) {
         this.prisma = prisma;
+        this.emailService = emailService;
     }
     async findAll() {
         return this.prisma.team.findMany({
@@ -71,12 +74,17 @@ let TeamsService = class TeamsService {
         if (existing)
             throw new common_1.BadRequestException('Ese usuario ya pertenece al equipo');
         const role = dto.role === 'ADMIN' ? 'ADMIN' : 'MEMBER';
-        return this.prisma.teamMember.create({
+        const member = await this.prisma.teamMember.create({
             data: { teamId, userId: user.id, role },
             include: {
                 user: { select: { id: true, name: true, email: true } },
             },
         });
+        const inviter = await this.prisma.user.findUnique({ where: { id: dto.inviterId } });
+        if (inviter) {
+            await this.emailService.sendInvitationEmail(user.email, team.name, inviter.name);
+        }
+        return member;
     }
     async removeMember(teamId, userId) {
         const team = await this.prisma.team.findUnique({ where: { id: teamId } });
@@ -94,6 +102,6 @@ let TeamsService = class TeamsService {
 exports.TeamsService = TeamsService;
 exports.TeamsService = TeamsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, email_service_1.EmailService])
 ], TeamsService);
 //# sourceMappingURL=teams.service.js.map
