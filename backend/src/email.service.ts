@@ -1,37 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
-
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-  }
+  private serviceId = process.env.EMAILJS_SERVICE_ID || 'service_vmhzjxq';
+  private templateId = process.env.EMAILJS_TEMPLATE_ID || 'template_qt9pj5p';
+  private publicKey = process.env.EMAILJS_PUBLIC_KEY || 'FlGqkq7QB0bvFuyEq';
+  private privateKey = process.env.EMAILJS_PRIVATE_KEY || 'tu-private-key-aqui';
 
   async sendInvitationEmail(to: string, teamName: string, inviterName: string) {
-    const subject = `Invitación a unirse al equipo ${teamName}`;
-    const html = `
-      <h1>¡Has sido invitado a un equipo!</h1>
-      <p>Hola,</p>
-      <p>${inviterName} te ha invitado a unirte al equipo <strong>${teamName}</strong> en Team To-Do.</p>
-      <p>Para aceptar la invitación, inicia sesión en la aplicación.</p>
-      <p>Saludos,<br>El equipo de Team To-Do</p>
-    `;
+    const url = 'https://api.emailjs.com/api/v1.0/email/send';
+    const data = {
+      service_id: this.serviceId,
+      template_id: this.templateId,
+      user_id: this.publicKey, // Use public key as user_id
+      accessToken: this.privateKey, // Add private key for strict mode
+      template_params: {
+        to_email: to,
+        team_name: teamName,
+        inviter_name: inviterName,
+        message: `Has sido invitado al equipo ${teamName} por ${inviterName}. Inicia sesión para unirte.`,
+      },
+    };
 
-    await this.transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
-      to,
-      subject,
-      html,
+    console.log('EmailJS Data:', data); // Debug log
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
     });
+
+    console.log('EmailJS Response Status:', response.status); // Debug log
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('EmailJS Error Response:', errorText); // Debug log
+      throw new Error(`EmailJS error: ${response.statusText} - ${errorText}`);
+    }
   }
 }

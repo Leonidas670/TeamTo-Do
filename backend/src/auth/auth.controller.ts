@@ -33,7 +33,7 @@ export class AuthController {
         email: rest.email,
       },
       secret,
-      { expiresIn: '7d' },
+      { expiresIn: '24h' },
     );
 
     return { user: rest, token };
@@ -56,7 +56,7 @@ export class AuthController {
         email: rest.email,
       },
       secret,
-      { expiresIn: '7d' },
+      { expiresIn: '24h' },
     );
 
     return { user: rest, token };

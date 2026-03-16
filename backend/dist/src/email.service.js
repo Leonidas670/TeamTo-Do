@@ -1,83 +1,50 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
 const common_1 = require("@nestjs/common");
-const nodemailer = __importStar(require("nodemailer"));
 let EmailService = class EmailService {
-    transporter;
-    constructor() {
-        this.transporter = nodemailer.createTransporter({
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: parseInt(process.env.SMTP_PORT || '587'),
-            secure: false,
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
-            },
-        });
-    }
+    serviceId = process.env.EMAILJS_SERVICE_ID || 'service_vmhzjxq';
+    templateId = process.env.EMAILJS_TEMPLATE_ID || 'template_qt9pj5p';
+    publicKey = process.env.EMAILJS_PUBLIC_KEY || 'FlGqkq7QB0bvFuyEq';
+    privateKey = process.env.EMAILJS_PRIVATE_KEY || 'tu-private-key-aqui';
     async sendInvitationEmail(to, teamName, inviterName) {
-        const subject = `Invitación a unirse al equipo ${teamName}`;
-        const html = `
-      <h1>¡Has sido invitado a un equipo!</h1>
-      <p>Hola,</p>
-      <p>${inviterName} te ha invitado a unirte al equipo <strong>${teamName}</strong> en Team To-Do.</p>
-      <p>Para aceptar la invitación, inicia sesión en la aplicación.</p>
-      <p>Saludos,<br>El equipo de Team To-Do</p>
-    `;
-        await this.transporter.sendMail({
-            from: process.env.SMTP_FROM || process.env.SMTP_USER,
-            to,
-            subject,
-            html,
+        const url = 'https://api.emailjs.com/api/v1.0/email/send';
+        const data = {
+            service_id: this.serviceId,
+            template_id: this.templateId,
+            user_id: this.publicKey,
+            accessToken: this.privateKey,
+            template_params: {
+                to_email: to,
+                team_name: teamName,
+                inviter_name: inviterName,
+                message: `Has sido invitado al equipo ${teamName} por ${inviterName}. Inicia sesión para unirte.`,
+            },
+        };
+        console.log('EmailJS Data:', data);
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
         });
+        console.log('EmailJS Response Status:', response.status);
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.log('EmailJS Error Response:', errorText);
+            throw new Error(`EmailJS error: ${response.statusText} - ${errorText}`);
+        }
     }
 };
 exports.EmailService = EmailService;
 exports.EmailService = EmailService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    (0, common_1.Injectable)()
 ], EmailService);
 //# sourceMappingURL=email.service.js.map

@@ -15,16 +15,16 @@ export declare class TeamsService {
             };
         } & {
             id: number;
+            teamId: number;
             role: import(".prisma/client").$Enums.TeamRole;
             userId: number;
-            teamId: number;
         })[];
     } & {
         id: number;
-        name: string;
-        description: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     })[]>;
     findOne(id: number): Promise<{
         members: ({
@@ -35,23 +35,23 @@ export declare class TeamsService {
             };
         } & {
             id: number;
+            teamId: number;
             role: import(".prisma/client").$Enums.TeamRole;
             userId: number;
-            teamId: number;
         })[];
     } & {
         id: number;
-        name: string;
-        description: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     }>;
     create(dto: CreateTeamDto): Promise<{
         id: number;
-        name: string;
-        description: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     }>;
     getMembers(teamId: number): Promise<({
         user: {
@@ -61,9 +61,9 @@ export declare class TeamsService {
         };
     } & {
         id: number;
+        teamId: number;
         role: import(".prisma/client").$Enums.TeamRole;
         userId: number;
-        teamId: number;
     })[]>;
     addMember(teamId: number, dto: AddMemberDto): Promise<{
         user: {
@@ -73,9 +73,9 @@ export declare class TeamsService {
         };
     } & {
         id: number;
+        teamId: number;
         role: import(".prisma/client").$Enums.TeamRole;
         userId: number;
-        teamId: number;
     }>;
     removeMember(teamId: number, userId: number): Promise<{
         ok: boolean;

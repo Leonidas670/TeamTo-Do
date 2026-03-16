@@ -74,6 +74,16 @@ let UsersService = class UsersService {
             },
         });
     }
+    async update(id, dto) {
+        const user = await this.findOne(id);
+        return this.prisma.user.update({
+            where: { id },
+            data: {
+                name: dto.name ?? user.name,
+                email: dto.email ?? user.email,
+            },
+        });
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

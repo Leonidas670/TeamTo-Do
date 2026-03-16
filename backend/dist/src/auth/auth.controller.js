@@ -75,7 +75,7 @@ let AuthController = class AuthController {
             sub: rest.id,
             name: rest.name,
             email: rest.email,
-        }, secret, { expiresIn: '7d' });
+        }, secret, { expiresIn: '24h' });
         return { user: rest, token };
     }
     async register(body) {
@@ -90,7 +90,7 @@ let AuthController = class AuthController {
             sub: rest.id,
             name: rest.name,
             email: rest.email,
-        }, secret, { expiresIn: '7d' });
+        }, secret, { expiresIn: '24h' });
         return { user: rest, token };
     }
 };

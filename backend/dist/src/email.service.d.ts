@@ -1,5 +1,7 @@
 export declare class EmailService {
-    private transporter;
-    constructor();
+    private serviceId;
+    private templateId;
+    private publicKey;
+    private privateKey;
     sendInvitationEmail(to: string, teamName: string, inviterName: string): Promise<void>;
 }

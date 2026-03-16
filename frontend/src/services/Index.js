@@ -17,6 +17,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle 401 errors by logging out
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid, logout
+      localStorage.removeItem("auth_user");
+      localStorage.removeItem("auth_token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Obtener todas las tareas
 export const getTasks = () => api.get("/tasks").then((r) => r.data);
 
