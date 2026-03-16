@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import {
   getTeams,
   createTeam,
@@ -7,10 +7,10 @@ import {
 } from "../services/Index.js";
 import LoadingScreen from "../components/LoadingScreen";
 import { toast } from "react-toastify";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function Teams() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
